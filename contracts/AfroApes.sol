@@ -10,21 +10,31 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  */
 
 contract AfroApes is Ownable {
-
     mapping(address => bool) private allAddresses;
+
     constructor() {
         allAddresses[msg.sender] = true;
     }
-    
-    function addWhiteListAddress(address _address) public onlyOwner() {
+
+    function addWhiteListAddresses(address _address) public onlyOwner {
         allAddresses[_address] = true;
     }
 
-    function verifyAddressIsOnWhiteList(address _address) public view returns(bool) {
+    function verifyAddressIsOnWhiteList(address _address)
+        public
+        view
+        returns (bool)
+    {
         return allAddresses[_address];
     }
 
-    function getMyAddress () public view returns(bool) {
+    function WhiteList(address[] memory _addre) public onlyOwner {
+        for (uint256 i = 0; i < _addre.length; i++) {
+            allAddresses[_addre[i]] = true;
+        }
+    }
+
+    function getMyAddress() public view returns (bool) {
         return allAddresses[msg.sender];
     }
 }
