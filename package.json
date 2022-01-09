@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--openssl-legacy-provider npx hardhat test test/afroapes.test.js",
-    "run:compile": "cross-env NODE_OPTIONS=--openssl-legacy-provider npx hardhat run scripts/deploy.js",
+    "test": "npx hardhat test test/afroapes.test.js",
+    "run:compile": "npx hardhat run scripts/deploy.js",
+    "deploy:poap": "npx hardhat run scripts/deployPoap.js --network rinkeby",
     "console": "cross-env NODE_OPTIONS=--openssl-legacy-provider npx hardhat console"
   },
   "keywords": [],
