@@ -14,13 +14,13 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const AfroApes = await hre.ethers.getContractFactory("AfroApes");
-  const afroapes = await AfroApes.deploy();
+  //   const AfroApes = await hre.ethers.getContractFactory("AfroApes");
+  //   const afroapes = await AfroApes.deploy();
 
-  await afroapes.deployed();
-  console.log("AfroApes deployed to:", afroapes.address);
+  //   await afroapes.deployed();
+  // console.log("AfroApes deployed to:", afroapes.address);
   await hre.run("verify:verify", {
-    address: afroapes.address,
+    address: "0x558893b8aaa7f1ab6e547d7c71f28d8bfc917020",
     constructorArguments: [],
   });
 }

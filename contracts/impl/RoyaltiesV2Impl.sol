@@ -23,8 +23,8 @@ contract RoyaltiesV2Impl is AbstractRoyalties, RoyaltiesV2 {
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
         external
         view
-        returns (address receiver, uint256 royaltyAmount)
+        returns (LibPart.Part[] memory)
     {
-        return royalties[id];
+        return royalties[_tokenId];
     }
 }

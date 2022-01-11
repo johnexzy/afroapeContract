@@ -8,10 +8,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "./impl/RoyaltiesV2Impl.sol";
-import "./royalties/contracts/LibPart.sol";
-import "./royalties/contracts/LibRoyaltiesV2.sol";
-contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
+
+contract AfroApes is ERC721, Ownable  {
     using SafeMath for uint256;
     using Strings for uint256;
     using Counters for Counters.Counter;
@@ -37,16 +35,16 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
     mapping(uint256 => bool) private maskedApes;
 
     // Base URI
-    string private _baseURI;
+    string private _ApesBaseURI = "https://gateway.pinata.cloud/ipfs/QmVoWMd9Xwu9e3NauQ3RitiwH56CFrpBPKeJuf4fVrsuEn/";
 
     constructor(
-        string memory name,
-        string memory symbol,
-        uint256 maxNftSupply,
-        uint256 saleStart
-    ) ERC721(name, symbol) {
-        MAX_APES = maxNftSupply;
-        REVEAL_TIMESTAMP = saleStart + (86400 * 9);
+        // string memory name,
+        // string memory symbol,
+        // uint256 maxNftSupply,
+        // uint256 saleStart
+    ) ERC721("MYApes", "Apes") {
+        MAX_APES = 100;
+        REVEAL_TIMESTAMP = 1 + (86400 * 9);
     }
 
     // function withdraw() public onlyOwner {
@@ -60,8 +58,8 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
     function reserveApes(uint256 reserve) public onlyOwner {
         uint256 i;
         for (i = 0; i < reserve; i++) {
-            _safeMint(msg.sender, _tokenIds.current());
-            _setRoyalties(_tokenIds.current(), payable(owner()), 1000)
+            _safeMint(owner(), totalSupply());
+            // _setRoyalties(totalSupply(), payable(owner()), 1000);
             _tokenIds.increment();
         }
     }
@@ -98,7 +96,7 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
         );
         require(numberOfApes > 0, "Must mint at least one Ape");
         require(
-            _tokenIds.current().add(numberOfApes) <= MAX_APES,
+            totalSupply().add(numberOfApes) <= MAX_APES,
             "Purchase would exceed max supply of Apes"
         );
 
@@ -108,10 +106,10 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
         );
 
         for (uint256 i = 0; i < numberOfApes; i++) {
-            // uint256 mintIndex = _tokenIds.current();
-            if (_tokenIds.current() < MAX_APES) {
-                _safeMint(msg.sender, _tokenIds.current());
-                _setRoyalties(_tokenIds.current(), payable(owner()), 1000)
+            // uint256 mintIndex = totalSupply();
+            if (totalSupply() < MAX_APES) {
+                _safeMint(msg.sender, totalSupply());
+                // _setRoyalties(totalSupply(), payable(owner()), 1000);
                 _tokenIds.increment();
             }
         }
@@ -125,7 +123,7 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
         // the end of pre-sale, set the starting index block
         if (
             startingIndexBlock == 0 &&
-            (_tokenIds.current() == MAX_APES ||
+            (totalSupply() == MAX_APES ||
                 block.timestamp >= REVEAL_TIMESTAMP)
         ) {
             startingIndexBlock = block.number;
@@ -182,9 +180,9 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
             return _tokenURI;
         }
         return
-            bytes(_baseURI).length > 0
+            bytes(baseURI()).length > 0
                 ? string(
-                    abi.encodePacked(_baseURI, tokenId.toString(), ".json")
+                    abi.encodePacked(baseURI(), tokenId.toString(), ".json")
                 )
                 : "";
     }
@@ -195,7 +193,7 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
      * to the token ID if no specific URI is set for that token ID.
      */
     function baseURI() public view virtual returns (string memory) {
-        return _baseURI;
+        return _ApesBaseURI;
     }
 
     /**
@@ -222,7 +220,7 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
      * or to the token ID if {tokenURI} is empty.
      */
     function _setBaseURI(string memory baseURI_) internal virtual {
-        _baseURI = baseURI_;
+        _ApesBaseURI = baseURI_;
     }
 
     /**
@@ -245,26 +243,26 @@ contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
         maskedApes[tokenId] = false;
     }
 
-    function setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) public onlyOwner {
-        LibPart.Part[] memory _royalties = new LibPart.Part[](1);
-        _royalties[0].value = _percentageBasisPoints;
-        _royalties[0].account = _royaltiesReceipientAddress;
-        _saveRoyalties(_tokenId, _royalties);
-    }
-    function _setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) internal virtual {
-        LibPart.Part[] memory _royalties = new LibPart.Part[](1);
-        _royalties[0].value = _percentageBasisPoints;
-        _royalties[0].account = _royaltiesReceipientAddress;
-        _saveRoyalties(_tokenId, _royalties);
-    }
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
-            if(interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
-                return true;
-            }
-            return super.supportsInterface(interfaceId);
-        }
-    }
-    function getNumberOfApesMinted() public view returns (uint256) {
+    // function setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) public onlyOwner {
+    //     LibPart.Part[] memory _royalties = new LibPart.Part[](1);
+    //     _royalties[0].value = _percentageBasisPoints;
+    //     _royalties[0].account = _royaltiesReceipientAddress;
+    //     _saveRoyalties(_tokenId, _royalties);
+    // }
+    // function _setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) internal virtual {
+    //     LibPart.Part[] memory _royalties = new LibPart.Part[](1);
+    //     _royalties[0].value = _percentageBasisPoints;
+    //     _royalties[0].account = _royaltiesReceipientAddress;
+    //     _saveRoyalties(_tokenId, _royalties);
+    // }
+    // function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
+    //         if(interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
+    //             return true;
+    //         }
+    //         return super.supportsInterface(interfaceId);
+    //     }
+    // }
+    function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
     }
 

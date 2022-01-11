@@ -10,11 +10,11 @@ interface RoyaltiesV2 {
         view
         returns (LibPart.Part[] memory);
     
-    function royaltyInfo(
-        uint256 _tokenId,
-        uint256 _salePrice
-    ) external view returns (
-        address receiver,
-        uint256 royaltyAmount
-    )
+    // function royaltyInfo(
+    //     uint256 _tokenId,
+    //     uint256 _salePrice
+    // ) external view returns (
+    //     address receiver,
+    //     uint256 royaltyAmount
+    // );
 }
