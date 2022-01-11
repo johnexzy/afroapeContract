@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-
-contract AfroApe is ERC721, Ownable {
+import "./impl/RoyaltiesV2Impl.sol";
+import "./royalties/contracts/LibPart.sol";
+import "./royalties/contracts/LibRoyaltiesV2.sol";
+contract AfroApe is ERC721, Ownable, RoyaltiesV2Impl  {
     using SafeMath for uint256;
     using Strings for uint256;
     using Counters for Counters.Counter;
@@ -59,6 +61,7 @@ contract AfroApe is ERC721, Ownable {
         uint256 i;
         for (i = 0; i < reserve; i++) {
             _safeMint(msg.sender, _tokenIds.current());
+            _setRoyalties(_tokenIds.current(), payable(owner()), 1000)
             _tokenIds.increment();
         }
     }
@@ -105,9 +108,10 @@ contract AfroApe is ERC721, Ownable {
         );
 
         for (uint256 i = 0; i < numberOfApes; i++) {
-            uint256 mintIndex = _tokenIds.current();
-            if (mintIndex < MAX_APES) {
-                _safeMint(msg.sender, mintIndex);
+            // uint256 mintIndex = _tokenIds.current();
+            if (_tokenIds.current() < MAX_APES) {
+                _safeMint(msg.sender, _tokenIds.current());
+                _setRoyalties(_tokenIds.current(), payable(owner()), 1000)
                 _tokenIds.increment();
             }
         }
@@ -241,6 +245,25 @@ contract AfroApe is ERC721, Ownable {
         maskedApes[tokenId] = false;
     }
 
+    function setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) public onlyOwner {
+        LibPart.Part[] memory _royalties = new LibPart.Part[](1);
+        _royalties[0].value = _percentageBasisPoints;
+        _royalties[0].account = _royaltiesReceipientAddress;
+        _saveRoyalties(_tokenId, _royalties);
+    }
+    function _setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) internal virtual {
+        LibPart.Part[] memory _royalties = new LibPart.Part[](1);
+        _royalties[0].value = _percentageBasisPoints;
+        _royalties[0].account = _royaltiesReceipientAddress;
+        _saveRoyalties(_tokenId, _royalties);
+    }
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
+            if(interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
+                return true;
+            }
+            return super.supportsInterface(interfaceId);
+        }
+    }
     function getNumberOfApesMinted() public view returns (uint256) {
         return _tokenIds.current();
     }
