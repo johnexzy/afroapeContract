@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract AfroApes is ERC721, Ownable  {
+contract AfroApes is ERC721, Ownable {
     using SafeMath for uint256;
     using Strings for uint256;
     using Counters for Counters.Counter;
@@ -21,7 +21,7 @@ contract AfroApes is ERC721, Ownable  {
 
     uint256 public startingIndex;
 
-    uint256 public constant APE_PRICE = 50000000000000000; //0.05 ETH
+    uint256 private APE_PRICE = 50000000000000000; //0.05 ETH
 
     uint256 public constant MAX_APE_PURCHASE = 10;
 
@@ -35,15 +35,17 @@ contract AfroApes is ERC721, Ownable  {
     mapping(uint256 => bool) private maskedApes;
 
     // Base URI
-    string private _ApesBaseURI = "https://gateway.pinata.cloud/ipfs/QmVoWMd9Xwu9e3NauQ3RitiwH56CFrpBPKeJuf4fVrsuEn/";
+    string private _ApesBaseURI =
+        "https://gateway.pinata.cloud/ipfs/QmSm5iRyvDa4afh4JXQQFoMLQGT81QXDk6q2SqCLxMCmFZ/";
 
-    constructor(
+    constructor()
         // string memory name,
         // string memory symbol,
         // uint256 maxNftSupply,
         // uint256 saleStart
-    ) ERC721("MYApes", "Apes") {
-        MAX_APES = 100;
+        ERC721("ApesOrigin", "Apes")
+    {
+        MAX_APES = 200;
         REVEAL_TIMESTAMP = 1 + (86400 * 9);
     }
 
@@ -123,8 +125,7 @@ contract AfroApes is ERC721, Ownable  {
         // the end of pre-sale, set the starting index block
         if (
             startingIndexBlock == 0 &&
-            (totalSupply() == MAX_APES ||
-                block.timestamp >= REVEAL_TIMESTAMP)
+            (totalSupply() == MAX_APES || block.timestamp >= REVEAL_TIMESTAMP)
         ) {
             startingIndexBlock = block.number;
         }
@@ -243,31 +244,34 @@ contract AfroApes is ERC721, Ownable  {
         maskedApes[tokenId] = false;
     }
 
-    // function setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) public onlyOwner {
-    //     LibPart.Part[] memory _royalties = new LibPart.Part[](1);
-    //     _royalties[0].value = _percentageBasisPoints;
-    //     _royalties[0].account = _royaltiesReceipientAddress;
-    //     _saveRoyalties(_tokenId, _royalties);
-    // }
-    // function _setRoyalties(uint _tokenId, address payable _royaltiesReceipientAddress, uint96 _percentageBasisPoints) internal virtual {
-    //     LibPart.Part[] memory _royalties = new LibPart.Part[](1);
-    //     _royalties[0].value = _percentageBasisPoints;
-    //     _royalties[0].account = _royaltiesReceipientAddress;
-    //     _saveRoyalties(_tokenId, _royalties);
-    // }
-    // function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
-    //         if(interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
-    //             return true;
-    //         }
-    //         return super.supportsInterface(interfaceId);
-    //     }
-    // }
     function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
     }
 
+    function setApeMintPrice(uint256 price) public onlyOwner {
+        APE_PRICE = price;
+    }
+    function getApeMintPrice() public view returns (uint256){
+        return APE_PRICE;
+    }
+
+
+    function setMaxApes(uint256 supply) public onlyOwner {
+        MAX_APES = supply;
+    }
+    /**
+     * @dev Withdraw all funds from contracts.
+     */
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         Address.sendValue(payable(msg.sender), balance);
+    }
+    /**
+     * @dev Withdraw funds from contracts.
+     */
+    function withdrawOnly(uint256 amount) external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance >= amount, "Amount exceeds total funds in contract" );
+        Address.sendValue(payable(msg.sender), amount);
     }
 }

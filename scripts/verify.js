@@ -8,7 +8,7 @@ const hre = require("hardhat");
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
-  //
+
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
@@ -20,7 +20,7 @@ async function main() {
   //   await afroapes.deployed();
   // console.log("AfroApes deployed to:", afroapes.address);
   await hre.run("verify:verify", {
-    address: "0x558893b8aaa7f1ab6e547d7c71f28d8bfc917020",
+    address: "0xB75C826779293879aB3D6Cd9beED54aDf11c08FE",
     constructorArguments: [],
   });
 }
