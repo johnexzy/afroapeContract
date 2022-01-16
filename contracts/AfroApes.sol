@@ -1299,8 +1299,12 @@ contract AfroApes is ERC721, Ownable {
 
 
     mapping(uint256 => string) private _tokenURIs;
-    mapping(uint256 => bool) private maskedApes;
     mapping(address => bool) private OG_addresses;
+
+    /**
+     * @dev addresses of OG's that have minted
+     */
+    mapping(address => bool) private OGMintedAddresses;
 
     /**
      * @dev triggered when on OGMint
@@ -1313,6 +1317,7 @@ contract AfroApes is ERC721, Ownable {
     modifier onlyOGWhitelist() {
         require(OG_addresses[msg.sender], "OnlyWhitelist: caller is not on the whitelist");
         _;
+        
     }
 
     // Base URI
@@ -1334,8 +1339,8 @@ contract AfroApes is ERC721, Ownable {
       * @dev This function should be called only by the owner. 
       */
     function reserveApes(uint256 amount) external onlyOwner {
-        uint256 i;
-        for (i = 0; i < amount; i++) {
+        
+        for (uint256 i = 0; i < amount; i++) {
             _safeMint(owner(), totalSupply());
             // _setRoyalties(totalSupply(), payable(owner()), 1000);
             _tokenIds.increment();
@@ -1364,8 +1369,9 @@ contract AfroApes is ERC721, Ownable {
     /**
      * @dev OG mint. Only for OG whitelisted adresses
      */
-    function mintApe() public payable onlyOGWhitelist {
+    function mintApe(uint256 tokenId) public payable onlyOGWhitelist {
         require(saleIsActive, "Sale must be active to mint Ape");
+        require(!OGMintedAddresses[msg.sender], "OnlyWhitelist: caller has previously minted");
         require(
             totalOGsMinted().add(1) <= OG_MAX,
             "Purchase would exceed max supply of OG"
@@ -1379,10 +1385,10 @@ contract AfroApes is ERC721, Ownable {
             "Ether value sent is not correct"
         );
 
+        _safeMint(msg.sender, tokenId);
+        emit OGMinted(msg.sender, tokenId);
 
-        
-        _safeMint(msg.sender, totalSupply());
-        // _setRoyalties(totalSupply(), payable(owner()), 1000);
+        OGMintedAddresses[msg.sender] = true;
         ogTokenCounter.increment();
         _tokenIds.increment();
 
@@ -1394,7 +1400,7 @@ contract AfroApes is ERC721, Ownable {
             );
         }
 
-        emit OGMinted(msg.sender, totalSupply());
+        
 
     }
 
@@ -1414,13 +1420,8 @@ contract AfroApes is ERC721, Ownable {
             _exists(tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        string memory _tokenURI = _tokenURIs[tokenId];
+        
 
-        // if token is masked incase of emergency, escape baseUri and return masked URI
-        //
-        if (maskedApes[tokenId]) {
-            return _tokenURI;
-        }
         return
             bytes(baseURI()).length > 0
                 ? string(
@@ -1466,30 +1467,6 @@ contract AfroApes is ERC721, Ownable {
         _ApesBaseURI = baseURI_;
     }
 
-    /**
-      * @dev redirect a token metadata to a different url
-      * usecase: emergency
-      *
-      * @param maskURI: url to be redirected
-      * @param tokenId: token id to mask
-      */
-    function maskAToken(string calldata maskURI, uint256 tokenId)
-        external
-        onlyOwner
-    {
-        _setTokenURI(tokenId, maskURI);
-        maskedApes[tokenId] = true;
-    }
-
-    /**
-      * @dev revert any redirect made on token
-      *
-      * @param tokenId: token id to un-mask
-      */
-    function unMaskAToken(uint256 tokenId) external onlyOwner {
-        _setTokenURI(tokenId, "");
-        maskedApes[tokenId] = false;
-    }
 
     /**
       *@dev returns total OG minted
@@ -1518,10 +1495,19 @@ contract AfroApes is ERC721, Ownable {
     /**
       * @dev return price in ETH for OG minting
       */
-    function getMintPriceInEth() external view returns (uint256){
-        return OG_MINT_PRICE.div(1 ether);
+    function getMintPriceInWEI() external view returns (uint256){
+        return OG_MINT_PRICE;
     }
 
+    /**
+     * @dev burn token. caller must own tokenId
+     * @param tokenId id of token to burn
+     */
+    function burn(uint256 tokenId) external {
+        require(ownerOf(tokenId) == msg.sender, "OwnerOf: burn only tokens you own");
+
+        _burn(tokenId);
+    }
 
     /**
      * @dev Withdraw all funds from contracts.
@@ -1530,6 +1516,7 @@ contract AfroApes is ERC721, Ownable {
         uint256 balance = address(this).balance;
         Address.sendValue(payable(msg.sender), balance);
     }
+
     /**
      * @dev Withdraw funds from contracts.
      */
