@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 
-/**
+/** 
  * @dev Collection of functions related to the address type
  */
 library Address {
@@ -1079,7 +1079,6 @@ contract AfroApesPoap is ERC1155, Pausable, Ownable {
     string  public name = "Afro Apes: Collectibles";
     string  public symbol = "AAC";
 
-    uint256 public totalSupply = 0;
     constructor() ERC1155("ipfs://QmUE8yTURyYwydBtLngUL3B7gwMk3v2FHt1stKaNDuW35n/{id}.json"){
 
     }
@@ -1089,15 +1088,14 @@ contract AfroApesPoap is ERC1155, Pausable, Ownable {
         _mint(account, id, amount, "");
     }
 
-    function airDropCollectibles(address[] calldata accounts, uint256 id, uint256 amount) external onlyOwner {
+    function airDropCollectibles(address[] memory accounts, uint256 id, uint256 amount) public onlyOwner {
         for(uint i = 0; i < accounts.length; i++){
-            if (balanceOf(accounts[i], id) > 0) {
-                continue;
+            if (balanceOf(accounts[i], id) == 0) {
+                mint(accounts[i], id, amount);
             }
-            mint(accounts[i], id, amount);
             
         }
-        totalSupply += 1;
+        
     }
 
     /**
