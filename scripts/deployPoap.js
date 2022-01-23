@@ -20,6 +20,10 @@ async function main() {
   await afroapes.deployed();
 
   console.log("AfroApesPoap deployed to:", afroapes.address);
+    await hre.run("verify:verify", {
+    address: afroapes.address,
+    constructorArguments: [],
+  });
 }
 
 // We recommend this pattern to be able to use async/await everywhere

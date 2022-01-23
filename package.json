@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx hardhat test test/afroapes.test.js",
     "run:compile": "npx hardhat run scripts/deploy.js",
-    "deploy:poap": "npx hardhat run scripts/deployPoap.js --network rinkeby",
+    "deploy:poap": "npx hardhat run scripts/deployPoap.js --network polygon",
     "deploy:apes": "npx hardhat run scripts/deploy.js --network rinkeby",
     "compile:apes": "npx hardhat run scripts/deploy.js ",
     "verify:publish": "npx hardhat run scripts/verify.js --network rinkeby",
