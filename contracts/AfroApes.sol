@@ -1412,7 +1412,7 @@ contract AfroApes is ERC721, Ownable {
 
     Counters.Counter private ogTokenCounter;
 
-    uint256 private OG_MINT_PRICE = 50000000000000000; //0.05 ETH
+    uint256 private OG_MINT_PRICE = 0.2 ether; //0.2 ETH
 
     uint256 public constant MAX_OG_PURCHASE = 1;
     uint256 public constant OG_MAX = 50;
@@ -1474,7 +1474,6 @@ contract AfroApes is ERC721, Ownable {
     function reserveApes(uint256 amount) external onlyOwner {
         for (uint256 i = 0; i < amount; i++) {
             _safeMint(owner(), totalSupply());
-            // _setRoyalties(totalSupply(), payable(owner()), 1000);
             _tokenIds.increment();
         }
     }
@@ -1610,7 +1609,7 @@ contract AfroApes is ERC721, Ownable {
     /**
      * @dev return price in ETH for OG minting
      */
-    function getMintPriceInWEI() external view returns (uint256) {
+    function getMintPrice() external view returns (uint256) {
         return OG_MINT_PRICE;
     }
 
