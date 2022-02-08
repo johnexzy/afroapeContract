@@ -1414,7 +1414,6 @@ contract AfroApes is ERC721, Ownable {
 
     uint256 private OG_MINT_PRICE = 0.2 ether; //0.2 ETH
 
-    uint256 public constant MAX_OG_PURCHASE = 1;
     uint256 public constant OG_MAX = 50;
 
     /**
@@ -1427,7 +1426,7 @@ contract AfroApes is ERC721, Ownable {
     uint256 public MAX_APES;
 
     /**
-     * @dev returns true if OG sale is active
+     * @dev returns true if Origin sale is active
      */
     bool public saleIsActive = true;
 
@@ -1440,7 +1439,7 @@ contract AfroApes is ERC721, Ownable {
     mapping(address => bool) private OGMintedAddresses;
 
     /**
-     * @dev triggered when on OGMint
+     * @dev triggered when OGMint
      */ 
     event OGMinted(address indexed to, uint256 imageId, uint256 tokenId);
 
