@@ -1431,7 +1431,7 @@ contract AfroApes is ERC721, Ownable {
     bool public saleIsActive = true;
 
     mapping(uint256 => string) private _tokenURIs;
-    mapping(address => bool) private OG_addresses;
+    mapping(address => bool) private AfroLists;
 
     /**
      * @dev addresses of OG's that have minted
@@ -1446,9 +1446,9 @@ contract AfroApes is ERC721, Ownable {
     /**
      * @dev Throws if called by any account other than Whitelisted Addresses.
      */
-    modifier onlyOGWhitelist() {
+    modifier onlyAfroLists() {
         require(
-            OG_addresses[msg.sender],
+            AfroLists[msg.sender],
             "OnlyWhitelist: caller is not on the whitelist"
         );
         _;
@@ -1487,10 +1487,16 @@ contract AfroApes is ERC721, Ownable {
         onlyOwner
     {
         for (uint256 i = 0; i < _address.length; i++) {
-            OG_addresses[_address[i]] = true;
+            AfroLists[_address[i]] = true;
         }
     }
 
+    /**
+     * Verify Addres in on AL
+     */
+     function verifyAddressIsWhiteListed(address _address) external view returns(bool){
+         return AfroLists[_address];
+     }
     /**
      * Pause OG sale if active, make active if paused
      * usecase: emergency.
@@ -1502,8 +1508,8 @@ contract AfroApes is ERC721, Ownable {
     /**
      * @dev OG mint. Only for OG whitelisted adresses
      */
-    function mint(uint256 tokenId) public payable onlyOGWhitelist {
-        require(saleIsActive, "Sale must be active to mint Ape");
+    function mint(uint256 tokenId) public payable onlyAfroLists {
+        require(saleIsActive, "Sale must be active to mint Afro Ape");
         require(
             !OGMintedAddresses[msg.sender],
             "OnlyWhitelist: caller has previously minted"
@@ -1630,7 +1636,7 @@ contract AfroApes is ERC721, Ownable {
      */
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
-        Address.sendValue(payable(msg.sender), balance);
+        Address.sendValue(payable(owner()), balance);
     }
 
     /**
@@ -1639,6 +1645,6 @@ contract AfroApes is ERC721, Ownable {
     function withdrawOnly(uint256 amount) external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance >= amount, "Amount exceeds total funds in contract");
-        Address.sendValue(payable(msg.sender), amount);
+        Address.sendValue(payable(owner()), amount);
     }
 }
