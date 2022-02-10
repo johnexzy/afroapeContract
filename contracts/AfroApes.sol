@@ -1441,7 +1441,7 @@ contract AfroApes is ERC721, Ownable {
     /**
      * @dev triggered when OGMint
      */ 
-    event OGMinted(address indexed to, uint256 imageId, uint256 tokenId);
+    event OGMinted(address indexed to, bytes32 imageHash, uint256 tokenId);
 
     /**
      * @dev Throws if called by any account other than Whitelisted Addresses.
@@ -1458,7 +1458,7 @@ contract AfroApes is ERC721, Ownable {
     string private _ApesBaseURI =
         "https://gateway.pinata.cloud/ipfs/QmSm5iRyvDa4afh4JXQQFoMLQGT81QXDk6q2SqCLxMCmFZ/";
 
-    constructor() ERC721("ApesOrigin", "Apes") {
+    constructor() ERC721("Afro Apes: The Origin", "AAO") {
         MAX_APES = 160;
     }
 
@@ -1501,31 +1501,31 @@ contract AfroApes is ERC721, Ownable {
      * Pause OG sale if active, make active if paused
      * usecase: emergency.
      */
-    function flipSaleState() public onlyOwner {
+    function flipSaleState() external onlyOwner {
         saleIsActive = !saleIsActive;
     }
 
     /**
      * @dev OG mint. Only for OG whitelisted adresses
      */
-    function mint(uint256 tokenId) public payable onlyAfroLists {
-        require(saleIsActive, "Sale must be active to mint Afro Ape");
+    function mint(bytes32 imageHash) external payable onlyAfroLists {
+        require(saleIsActive, "Sale is not active");
         require(
             !OGMintedAddresses[msg.sender],
-            "OnlyWhitelist: caller has previously minted"
+            "caller has previously minted"
         );
         require(
             totalOGsMinted().add(1) <= OG_MAX,
-            "Purchase would exceed max supply of OG"
+            "Purchase exceeds presale supply"
         );
         require(
             totalSupply().add(1) <= MAX_APES,
-            "Purchase would exceed max supply of OG"
+            "Purchase exceed max supply of OG"
         );
         require(OG_MINT_PRICE <= msg.value, "Ether value sent is not correct");
 
         _safeMint(msg.sender, totalSupply());
-        emit OGMinted(msg.sender, tokenId, totalSupply());
+        emit OGMinted(msg.sender, imageHash, totalSupply());
 
         OGMintedAddresses[msg.sender] = true;
         ogTokenCounter.increment();
