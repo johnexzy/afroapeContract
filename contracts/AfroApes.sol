@@ -1423,7 +1423,7 @@ contract AfroApes is ERC721, Ownable {
      *     - 100 Marketplaces Auction,
      *     - 10 For Team,
      */
-    uint256 public MAX_APES;
+    uint256 public constant MAX_APES = 160;
 
     /**
      * @dev returns true if Origin sale is active
@@ -1441,7 +1441,7 @@ contract AfroApes is ERC721, Ownable {
     /**
      * @dev triggered when OGMint
      */ 
-    event OGMinted(address indexed to, bytes32 imageHash, uint256 tokenId);
+    event OGMinted(address indexed to, string imageHash, uint256 tokenId);
 
     /**
      * @dev Throws if called by any account other than Whitelisted Addresses.
@@ -1449,17 +1449,17 @@ contract AfroApes is ERC721, Ownable {
     modifier onlyAfroLists() {
         require(
             AfroLists[msg.sender],
-            "OnlyWhitelist: caller is not on the whitelist"
+            "OnlyAfroList: caller is not on the AfroList"
         );
         _;
     }
 
     // Base URI
-    string private _ApesBaseURI =
-        "https://gateway.pinata.cloud/ipfs/QmSm5iRyvDa4afh4JXQQFoMLQGT81QXDk6q2SqCLxMCmFZ/";
+    string private _AfroBaseURI =
+        "https://api.afroapes.com/v1/collections/afro-apes-the-origin/";
 
     constructor() ERC721("Afro Apes: The Origin", "AAO") {
-        MAX_APES = 160;
+        
     }
 
     /**
@@ -1470,7 +1470,7 @@ contract AfroApes is ERC721, Ownable {
      *
      * @dev This function should be called only by the owner.
      */
-    function reserveApes(uint256 amount) external onlyOwner {
+    function mintMultiple(uint256 amount) external onlyOwner {
         for (uint256 i = 0; i < amount; i++) {
             _safeMint(owner(), totalSupply());
             _tokenIds.increment();
@@ -1478,11 +1478,11 @@ contract AfroApes is ERC721, Ownable {
     }
 
     /**
-     * @dev adds array of addresses to whitelists (OG addresses)
+     * @dev adds array of addresses to AfroList (OG addresses)
      *     - 50 OG, 50 addresses
      * @param _address: array of addresses
      */
-    function addAddressesForWhiteList(address[] calldata _address)
+    function addAddressesForAfroList(address[] calldata _address)
         external
         onlyOwner
     {
@@ -1501,14 +1501,14 @@ contract AfroApes is ERC721, Ownable {
      * Pause OG sale if active, make active if paused
      * usecase: emergency.
      */
-    function flipSaleState() external onlyOwner {
+    function toggleMintState() external onlyOwner {
         saleIsActive = !saleIsActive;
     }
 
     /**
      * @dev OG mint. Only for OG whitelisted adresses
      */
-    function mint(bytes32 imageHash) external payable onlyAfroLists {
+    function mint(string memory imageHash) external payable onlyAfroLists {
         require(saleIsActive, "Sale is not active");
         require(
             !OGMintedAddresses[msg.sender],
@@ -1517,10 +1517,6 @@ contract AfroApes is ERC721, Ownable {
         require(
             totalOGsMinted().add(1) <= OG_MAX,
             "Purchase exceeds presale supply"
-        );
-        require(
-            totalSupply().add(1) <= MAX_APES,
-            "Purchase exceed max supply of OG"
         );
         require(OG_MINT_PRICE <= msg.value, "Ether value sent is not correct");
 
@@ -1553,7 +1549,7 @@ contract AfroApes is ERC721, Ownable {
         return
             bytes(baseURI()).length > 0
                 ? string(
-                    abi.encodePacked(baseURI(), tokenId.toString(), ".json")
+                    abi.encodePacked(baseURI(), tokenId.toString())
                 )
                 : "";
     }
@@ -1564,26 +1560,9 @@ contract AfroApes is ERC721, Ownable {
      * to the token ID if no specific URI is set for that token ID.
      */
     function baseURI() public view virtual returns (string memory) {
-        return _ApesBaseURI;
+        return _AfroBaseURI;
     }
 
-    /**
-     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI)
-        internal
-        virtual
-    {
-        require(
-            _exists(tokenId),
-            "ERC721Metadata: URI set of nonexistent token"
-        );
-        _tokenURIs[tokenId] = _tokenURI;
-    }
 
     /**
      * Set Base URI.
@@ -1592,7 +1571,7 @@ contract AfroApes is ERC721, Ownable {
      *          e.g : https://example.com/
      */
     function setBaseURI(string calldata baseURI_) external virtual {
-        _ApesBaseURI = baseURI_;
+        _AfroBaseURI = baseURI_;
     }
 
     /**
@@ -1616,19 +1595,6 @@ contract AfroApes is ERC721, Ownable {
      */
     function getMintPrice() external view returns (uint256) {
         return OG_MINT_PRICE;
-    }
-
-    /**
-     * @dev burn token. caller must own tokenId
-     * @param tokenId id of token to burn
-     */
-    function burn(uint256 tokenId) external {
-        require(
-            ownerOf(tokenId) == msg.sender,
-            "OwnerOf: burn only tokens you own"
-        );
-
-        _burn(tokenId);
     }
 
     /**
