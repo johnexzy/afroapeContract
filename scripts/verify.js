@@ -20,7 +20,7 @@ async function main() {
   //   await afroapes.deployed();
   // console.log("AfroApes deployed to:", afroapes.address);
   await hre.run("verify:verify", {
-    address: "0x6D49c6100C417904728c224D9A6fcfB591F00Dc6",
+    address: "0x29181fA3728E1ED853Cd13905533A4feA22c4030",
     constructorArguments: [],
   });
 }
