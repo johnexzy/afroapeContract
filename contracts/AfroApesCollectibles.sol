@@ -1375,6 +1375,12 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
         )
     {}
 
+    // Modifiers
+    modifier tokenExists (uint256 _tokenId) {
+        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+        _;
+    }
+
     /**
      * @dev creates a token id. sets supply, limit and priceof token
      */
@@ -1390,8 +1396,7 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
         buyLimit[_tokenId] = _buyLimitPerAddress;
     }
 
-    function mint(uint256 _tokenId, uint256 amount) public payable {
-        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+    function mint(uint256 _tokenId, uint256 amount) public payable tokenExists(_tokenId) {
         require(
             _currentTokenSupply[_tokenId].add(amount) <
                 _maxTokenSupply[_tokenId],
@@ -1421,15 +1426,14 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
         address to,
         uint256 _tokenId,
         uint256 amount
-    ) public onlyOwner {
-        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+    ) public onlyOwner tokenExists(_tokenId) {
         require(
             _currentTokenSupply[_tokenId].add(amount) <
                 _maxTokenSupply[_tokenId],
             "minting exceeds max supply"
         );
         _mint(to, _tokenId, amount, "");
-        _currentTokenSupply[_tokenId] += 1;
+        _currentTokenSupply[_tokenId] += amount;
     }
 
     /**
@@ -1462,12 +1466,20 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
         _maxTokenSupply[_tokenId] = _supply;
     }
 
+     /**
+     * Set price of a token
+     * @param _tokenId -  id the token of token
+     * @param _price - new price for the of token
+     */
+    function setPriceOf(uint256 _tokenId, uint256 _price) public onlyOwner tokenExists(_tokenId) {
+        _priceOfCollectibles[_tokenId] = _price;
+    }
+
     /**
      * Get price of a token
      * @param _tokenId id of token
      */
-    function priceOf(uint256 _tokenId) public view returns (uint256) {
-        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+    function priceOf(uint256 _tokenId) public view tokenExists(_tokenId) returns (uint256) {
 
         return _priceOfCollectibles[_tokenId];
     }
