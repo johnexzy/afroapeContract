@@ -1,8 +1,11 @@
+/**
+ *Submitted for verification at polygonscan.com on 2022-01-31
+ */
+
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
-
-/** 
+/**
  * @dev Collection of functions related to the address type
  */
 library Address {
@@ -52,10 +55,16 @@ library Address {
      * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        require(address(this).balance >= amount, "Address: insufficient balance");
+        require(
+            address(this).balance >= amount,
+            "Address: insufficient balance"
+        );
 
         (bool success, ) = recipient.call{value: amount}("");
-        require(success, "Address: unable to send value, recipient may have reverted");
+        require(
+            success,
+            "Address: unable to send value, recipient may have reverted"
+        );
     }
 
     /**
@@ -76,7 +85,10 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCall(address target, bytes memory data) internal returns (bytes memory) {
+    function functionCall(address target, bytes memory data)
+        internal
+        returns (bytes memory)
+    {
         return functionCall(target, data, "Address: low-level call failed");
     }
 
@@ -110,7 +122,13 @@ library Address {
         bytes memory data,
         uint256 value
     ) internal returns (bytes memory) {
-        return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
+        return
+            functionCallWithValue(
+                target,
+                data,
+                value,
+                "Address: low-level call with value failed"
+            );
     }
 
     /**
@@ -125,10 +143,15 @@ library Address {
         uint256 value,
         string memory errorMessage
     ) internal returns (bytes memory) {
-        require(address(this).balance >= value, "Address: insufficient balance for call");
+        require(
+            address(this).balance >= value,
+            "Address: insufficient balance for call"
+        );
         require(isContract(target), "Address: call to non-contract");
 
-        (bool success, bytes memory returndata) = target.call{value: value}(data);
+        (bool success, bytes memory returndata) = target.call{value: value}(
+            data
+        );
         return verifyCallResult(success, returndata, errorMessage);
     }
 
@@ -138,8 +161,17 @@ library Address {
      *
      * _Available since v3.3._
      */
-    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {
-        return functionStaticCall(target, data, "Address: low-level static call failed");
+    function functionStaticCall(address target, bytes memory data)
+        internal
+        view
+        returns (bytes memory)
+    {
+        return
+            functionStaticCall(
+                target,
+                data,
+                "Address: low-level static call failed"
+            );
     }
 
     /**
@@ -165,8 +197,16 @@ library Address {
      *
      * _Available since v3.4._
      */
-    function functionDelegateCall(address target, bytes memory data) internal returns (bytes memory) {
-        return functionDelegateCall(target, data, "Address: low-level delegate call failed");
+    function functionDelegateCall(address target, bytes memory data)
+        internal
+        returns (bytes memory)
+    {
+        return
+            functionDelegateCall(
+                target,
+                data,
+                "Address: low-level delegate call failed"
+            );
     }
 
     /**
@@ -216,6 +256,117 @@ library Address {
 }
 
 /**
+ * @dev Wrappers over Solidity's arithmetic operations.
+ *
+ * NOTE: `SafeMath` is generally not needed starting with Solidity 0.8, since the compiler
+ * now has built in overflow checking.
+ */
+library SafeMath {
+    /**
+     * @dev Returns the addition of two unsigned integers, reverting on
+     * overflow.
+     *
+     * Counterpart to Solidity's `+` operator.
+     *
+     * Requirements:
+     *
+     * - Addition cannot overflow.
+     */
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a + b;
+    }
+
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting on
+     * overflow (when the result is negative).
+     *
+     * Counterpart to Solidity's `-` operator.
+     *
+     * Requirements:
+     *
+     * - Subtraction cannot overflow.
+     */
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a - b;
+    }
+
+    /**
+     * @dev Returns the multiplication of two unsigned integers, reverting on
+     * overflow.
+     *
+     * Counterpart to Solidity's `*` operator.
+     *
+     * Requirements:
+     *
+     * - Multiplication cannot overflow.
+     */
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a * b;
+    }
+
+    /**
+     * @dev Returns the integer division of two unsigned integers, reverting on
+     * division by zero. The result is rounded towards zero.
+     *
+     * Counterpart to Solidity's `/` operator.
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a / b;
+    }
+
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+     * overflow (when the result is negative).
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {trySub}.
+     *
+     * Counterpart to Solidity's `-` operator.
+     *
+     * Requirements:
+     *
+     * - Subtraction cannot overflow.
+     */
+    function sub(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
+        unchecked {
+            require(b <= a, errorMessage);
+            return a - b;
+        }
+    }
+
+    /**
+     * @dev Returns the integer division of two unsigned integers, reverting with custom message on
+     * division by zero. The result is rounded towards zero.
+     *
+     * Counterpart to Solidity's `/` operator. Note: this function uses a
+     * `revert` opcode (which leaves remaining gas untouched) while Solidity
+     * uses an invalid opcode to revert (consuming all remaining gas).
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
+    function div(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
+        unchecked {
+            require(b > 0, errorMessage);
+            return a / b;
+        }
+    }
+}
+
+/**
  * @dev Provides information about the current execution context, including the
  * sender of the transaction and its data. While these are generally available
  * via msg.sender and msg.data, they should not be accessed in such a direct
@@ -234,7 +385,6 @@ abstract contract Context {
         return msg.data;
     }
 }
-
 
 /**
  * @dev Contract module which allows children to implement an emergency stop
@@ -321,7 +471,6 @@ abstract contract Pausable is Context {
     }
 }
 
-
 /**
  * @dev Contract module which provides a basic access control mechanism, where
  * there is an account (an owner) that can be granted exclusive access to
@@ -337,7 +486,10 @@ abstract contract Pausable is Context {
 abstract contract Ownable is Context {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
@@ -377,7 +529,10 @@ abstract contract Ownable is Context {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         _transferOwnership(newOwner);
     }
 
@@ -413,7 +568,6 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-
 /**
  * @dev Implementation of the {IERC165} interface.
  *
@@ -432,11 +586,16 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
-
 
 /**
  * @dev Required interface of an ERC1155 compliant contract, as defined in the
@@ -448,7 +607,13 @@ interface IERC1155 is IERC165 {
     /**
      * @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
      */
-    event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
+    event TransferSingle(
+        address indexed operator,
+        address indexed from,
+        address indexed to,
+        uint256 id,
+        uint256 value
+    );
 
     /**
      * @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
@@ -466,7 +631,11 @@ interface IERC1155 is IERC165 {
      * @dev Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to
      * `approved`.
      */
-    event ApprovalForAll(address indexed account, address indexed operator, bool approved);
+    event ApprovalForAll(
+        address indexed account,
+        address indexed operator,
+        bool approved
+    );
 
     /**
      * @dev Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
@@ -484,7 +653,10 @@ interface IERC1155 is IERC165 {
      *
      * - `account` cannot be the zero address.
      */
-    function balanceOf(address account, uint256 id) external view returns (uint256);
+    function balanceOf(address account, uint256 id)
+        external
+        view
+        returns (uint256);
 
     /**
      * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}.
@@ -514,7 +686,10 @@ interface IERC1155 is IERC165 {
      *
      * See {setApprovalForAll}.
      */
-    function isApprovedForAll(address account, address operator) external view returns (bool);
+    function isApprovedForAll(address account, address operator)
+        external
+        view
+        returns (bool);
 
     /**
      * @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
@@ -556,7 +731,6 @@ interface IERC1155 is IERC165 {
         bytes calldata data
     ) external;
 }
-
 
 /**
  * @dev _Available since v3.1._
@@ -621,7 +795,6 @@ interface IERC1155MetadataURI is IERC1155 {
     function uri(uint256 id) external view returns (string memory);
 }
 
-
 /**
  * @dev Implementation of the basic standard multi-token.
  * See https://eips.ethereum.org/EIPS/eip-1155
@@ -651,7 +824,13 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC165, IERC165)
+        returns (bool)
+    {
         return
             interfaceId == type(IERC1155).interfaceId ||
             interfaceId == type(IERC1155MetadataURI).interfaceId ||
@@ -679,8 +858,17 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      *
      * - `account` cannot be the zero address.
      */
-    function balanceOf(address account, uint256 id) public view virtual override returns (uint256) {
-        require(account != address(0), "ERC1155: balance query for the zero address");
+    function balanceOf(address account, uint256 id)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            account != address(0),
+            "ERC1155: balance query for the zero address"
+        );
         return _balances[id][account];
     }
 
@@ -698,7 +886,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         override
         returns (uint256[] memory)
     {
-        require(accounts.length == ids.length, "ERC1155: accounts and ids length mismatch");
+        require(
+            accounts.length == ids.length,
+            "ERC1155: accounts and ids length mismatch"
+        );
 
         uint256[] memory batchBalances = new uint256[](accounts.length);
 
@@ -712,14 +903,24 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {IERC1155-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual override {
+    function setApprovalForAll(address operator, bool approved)
+        public
+        virtual
+        override
+    {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
     /**
      * @dev See {IERC1155-isApprovedForAll}.
      */
-    function isApprovedForAll(address account, address operator) public view virtual override returns (bool) {
+    function isApprovedForAll(address account, address operator)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return _operatorApprovals[account][operator];
     }
 
@@ -780,10 +981,20 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         address operator = _msgSender();
 
-        _beforeTokenTransfer(operator, from, to, _asSingletonArray(id), _asSingletonArray(amount), data);
+        _beforeTokenTransfer(
+            operator,
+            from,
+            to,
+            _asSingletonArray(id),
+            _asSingletonArray(amount),
+            data
+        );
 
         uint256 fromBalance = _balances[id][from];
-        require(fromBalance >= amount, "ERC1155: insufficient balance for transfer");
+        require(
+            fromBalance >= amount,
+            "ERC1155: insufficient balance for transfer"
+        );
         unchecked {
             _balances[id][from] = fromBalance - amount;
         }
@@ -811,7 +1022,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory amounts,
         bytes memory data
     ) internal virtual {
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+        require(
+            ids.length == amounts.length,
+            "ERC1155: ids and amounts length mismatch"
+        );
         require(to != address(0), "ERC1155: transfer to the zero address");
 
         address operator = _msgSender();
@@ -823,7 +1037,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
             uint256 amount = amounts[i];
 
             uint256 fromBalance = _balances[id][from];
-            require(fromBalance >= amount, "ERC1155: insufficient balance for transfer");
+            require(
+                fromBalance >= amount,
+                "ERC1155: insufficient balance for transfer"
+            );
             unchecked {
                 _balances[id][from] = fromBalance - amount;
             }
@@ -832,7 +1049,14 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         emit TransferBatch(operator, from, to, ids, amounts);
 
-        _doSafeBatchTransferAcceptanceCheck(operator, from, to, ids, amounts, data);
+        _doSafeBatchTransferAcceptanceCheck(
+            operator,
+            from,
+            to,
+            ids,
+            amounts,
+            data
+        );
     }
 
     /**
@@ -879,12 +1103,26 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         address operator = _msgSender();
 
-        _beforeTokenTransfer(operator, address(0), to, _asSingletonArray(id), _asSingletonArray(amount), data);
+        _beforeTokenTransfer(
+            operator,
+            address(0),
+            to,
+            _asSingletonArray(id),
+            _asSingletonArray(amount),
+            data
+        );
 
         _balances[id][to] += amount;
         emit TransferSingle(operator, address(0), to, id, amount);
 
-        _doSafeTransferAcceptanceCheck(operator, address(0), to, id, amount, data);
+        _doSafeTransferAcceptanceCheck(
+            operator,
+            address(0),
+            to,
+            id,
+            amount,
+            data
+        );
     }
 
     /**
@@ -903,7 +1141,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         bytes memory data
     ) internal virtual {
         require(to != address(0), "ERC1155: mint to the zero address");
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+        require(
+            ids.length == amounts.length,
+            "ERC1155: ids and amounts length mismatch"
+        );
 
         address operator = _msgSender();
 
@@ -915,7 +1156,14 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         emit TransferBatch(operator, address(0), to, ids, amounts);
 
-        _doSafeBatchTransferAcceptanceCheck(operator, address(0), to, ids, amounts, data);
+        _doSafeBatchTransferAcceptanceCheck(
+            operator,
+            address(0),
+            to,
+            ids,
+            amounts,
+            data
+        );
     }
 
     /**
@@ -935,7 +1183,14 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         address operator = _msgSender();
 
-        _beforeTokenTransfer(operator, from, address(0), _asSingletonArray(id), _asSingletonArray(amount), "");
+        _beforeTokenTransfer(
+            operator,
+            from,
+            address(0),
+            _asSingletonArray(id),
+            _asSingletonArray(amount),
+            ""
+        );
 
         uint256 fromBalance = _balances[id][from];
         require(fromBalance >= amount, "ERC1155: burn amount exceeds balance");
@@ -959,7 +1214,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory amounts
     ) internal virtual {
         require(from != address(0), "ERC1155: burn from the zero address");
-        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+        require(
+            ids.length == amounts.length,
+            "ERC1155: ids and amounts length mismatch"
+        );
 
         address operator = _msgSender();
 
@@ -970,7 +1228,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
             uint256 amount = amounts[i];
 
             uint256 fromBalance = _balances[id][from];
-            require(fromBalance >= amount, "ERC1155: burn amount exceeds balance");
+            require(
+                fromBalance >= amount,
+                "ERC1155: burn amount exceeds balance"
+            );
             unchecked {
                 _balances[id][from] = fromBalance - amount;
             }
@@ -1032,7 +1293,15 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         bytes memory data
     ) private {
         if (to.isContract()) {
-            try IERC1155Receiver(to).onERC1155Received(operator, from, id, amount, data) returns (bytes4 response) {
+            try
+                IERC1155Receiver(to).onERC1155Received(
+                    operator,
+                    from,
+                    id,
+                    amount,
+                    data
+                )
+            returns (bytes4 response) {
                 if (response != IERC1155Receiver.onERC1155Received.selector) {
                     revert("ERC1155: ERC1155Receiver rejected tokens");
                 }
@@ -1053,10 +1322,18 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         bytes memory data
     ) private {
         if (to.isContract()) {
-            try IERC1155Receiver(to).onERC1155BatchReceived(operator, from, ids, amounts, data) returns (
-                bytes4 response
-            ) {
-                if (response != IERC1155Receiver.onERC1155BatchReceived.selector) {
+            try
+                IERC1155Receiver(to).onERC1155BatchReceived(
+                    operator,
+                    from,
+                    ids,
+                    amounts,
+                    data
+                )
+            returns (bytes4 response) {
+                if (
+                    response != IERC1155Receiver.onERC1155BatchReceived.selector
+                ) {
                     revert("ERC1155: ERC1155Receiver rejected tokens");
                 }
             } catch Error(string memory reason) {
@@ -1067,7 +1344,11 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         }
     }
 
-    function _asSingletonArray(uint256 element) private pure returns (uint256[] memory) {
+    function _asSingletonArray(uint256 element)
+        private
+        pure
+        returns (uint256[] memory)
+    {
         uint256[] memory array = new uint256[](1);
         array[0] = element;
 
@@ -1075,42 +1356,179 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 }
 
-contract AfroApesPoap is ERC1155, Pausable, Ownable {
-    string  public name = "Afro Apes: Collectibles";
-    string  public symbol = "AAC";
+contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
+    string public name = "Afro Apes: Collectibles";
+    string public symbol = "AAC";
+    using SafeMath for uint256;
+    uint256 public _numberOfCollectibles = 0;
 
-    constructor() ERC1155("ipfs://QmUE8yTURyYwydBtLngUL3B7gwMk3v2FHt1stKaNDuW35n/{id}.json"){
+    mapping(uint256 => uint256) private _maxTokenSupply;
+    mapping(uint256 => uint256) private _currentTokenSupply;
+    mapping(uint256 => uint256) private _priceOfCollectibles;
+    mapping(address => mapping(uint256 => uint256))
+        private _mintCountPerAddress;
+    mapping(uint256 => uint256) private buyLimit;
 
+    constructor()
+        ERC1155(
+            "https://api.afroapes.com/v1/collections/afro-apes-collectibles/{id}"
+        )
+    {}
+
+    /**
+     * @dev creates a token id. sets supply, limit and priceof token
+     */
+    function initializeCollectible(
+        uint256 _tokenId,
+        uint256 _supply,
+        uint256 _price,
+        uint256 _buyLimitPerAddress
+    ) public onlyOwner {
+        _numberOfCollectibles += 1;
+        _maxTokenSupply[_tokenId] = _supply;
+        _priceOfCollectibles[_tokenId] = _price;
+        buyLimit[_tokenId] = _buyLimitPerAddress;
     }
-    
 
-    function mint(address account, uint256 id, uint256 amount) public onlyOwner {
-        _mint(account, id, amount, "");
-    }
-
-    function airDropCollectibles(address[] memory accounts, uint256 id, uint256 amount) public onlyOwner {
-        for(uint i = 0; i < accounts.length; i++){
-            if (balanceOf(accounts[i], id) == 0) {
-                mint(accounts[i], id, amount);
-            }
-            
-        }
-        
+    function mint(uint256 _tokenId, uint256 amount) public payable {
+        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+        require(
+            _currentTokenSupply[_tokenId].add(amount) <
+                _maxTokenSupply[_tokenId],
+            "minting exceeds max supply"
+        );
+        require(
+            _priceOfCollectibles[_tokenId] <= msg.value,
+            "Ether value sent is not correct"
+        );
+        require(
+            _mintCountPerAddress[msg.sender][_tokenId] <= buyLimit[_tokenId],
+            "caller has exceeded buy limit"
+        );
+        _mint(msg.sender, _tokenId, amount, "");
+        _currentTokenSupply[_tokenId] += 1;
+        _mintCountPerAddress[msg.sender][_tokenId] += amount;
     }
 
     /**
-        When a new metadata is uploaded set the ipfs CID as newUri
-    */
-    function changeBaseURI(string memory newuri) public onlyOwner() {
+     * @dev gasless minting to address
+     * gas fees is paid by the caller.
+     * -to address to airdrop
+     * -_tokenId to aidrop
+     * -amount of tokens to aidrop
+     */
+    function airDropCollectible(
+        address to,
+        uint256 _tokenId,
+        uint256 amount
+    ) public onlyOwner {
+        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+        require(
+            _currentTokenSupply[_tokenId].add(amount) <
+                _maxTokenSupply[_tokenId],
+            "minting exceeds max supply"
+        );
+        _mint(to, _tokenId, amount, "");
+        _currentTokenSupply[_tokenId] += 1;
+    }
+
+    /**
+     * Set token buy limit per address
+     * @param accounts - Mint to all addresses in the arroy
+     * @param id - token address to be minted. (must be intialized prior)
+     * @param amount - amount per addresses
+     */
+    function mintMany(
+        address[] memory accounts,
+        uint256 id,
+        uint256 amount
+    ) public onlyOwner {
+        for (uint256 i = 0; i < accounts.length; i++) {
+            if (balanceOf(accounts[i], id) == 0) {
+                airDropCollectible(accounts[i], id, amount);
+            }
+        }
+    }
+
+    /**
+     * Set token buy limit per address
+     * @param _tokenId - id of the token
+     * @param _supply - maximmum supply of the specified token
+     */
+    function setMaxTokenSupplyOf(uint256 _tokenId, uint256 _supply)
+        public
+        onlyOwner
+    {
+        _maxTokenSupply[_tokenId] = _supply;
+    }
+
+    /**
+     * Get price of a token
+     * @param _tokenId id of token
+     */
+    function priceOf(uint256 _tokenId) public view returns (uint256) {
+        require(_maxTokenSupply[_tokenId] > 0, "querying a nonexistent token");
+
+        return _priceOfCollectibles[_tokenId];
+    }
+
+    /**
+     * Set token buy limit per address
+     * @param _tokenId - id of the token
+     * @param amount - maximmum number to be minted per-address
+     */
+    function setBuyLimitOf(uint256 _tokenId, uint256 amount) public onlyOwner {
+        buyLimit[_tokenId] = amount;
+    }
+
+    /**
+     * Get supply of a token
+     * @param _tokenId id of token
+     */
+    function maxTokenSupplyOf(uint256 _tokenId) public view returns (uint256) {
+        return _maxTokenSupply[_tokenId];
+    }
+
+    /**
+     *   @dev updates contracts metadata
+     *   @param newuri e.g.  https://api.afroapes.com/v1/collections/afro-apes-collectibles/{id}
+     */
+    function changeBaseURI(string memory newuri) public onlyOwner {
         _setURI(newuri);
     }
 
-    function pause() public onlyOwner() {
+    function totalSupply() public view returns (uint256) {
+        return _numberOfCollectibles;
+    }
+
+    /**
+     * @dev pause transfers
+     */
+    function pause() public onlyOwner {
         _pause();
     }
 
-    function unpause() public onlyOwner() {
+    /**
+     * @dev unpause transfers
+     */
+    function unpause() public onlyOwner {
         _unpause();
     }
 
+    /**
+     * @dev Withdraw all funds from contracts.
+     */
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        Address.sendValue(payable(owner()), balance);
+    }
+
+    /**
+     * @dev Withdraw funds from contracts.
+     */
+    function withdrawOnly(uint256 amount) external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance >= amount, "Amount exceeds total funds in contract");
+        Address.sendValue(payable(owner()), amount);
+    }
 }
