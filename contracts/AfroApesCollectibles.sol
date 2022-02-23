@@ -1376,7 +1376,7 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
     {}
 
     /**
-     * @dev creates
+     * @dev creates a token id. sets supply, limit and priceof token
      */
     function initializeCollectible(
         uint256 _tokenId,
