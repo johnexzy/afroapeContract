@@ -1429,7 +1429,7 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
             "minting exceeds max supply"
         );
         _mint(to, _tokenId, amount, "");
-        _currentTokenSupply[_tokenId] += 1;
+        _currentTokenSupply[_tokenId] += amount;
     }
 
     /**
