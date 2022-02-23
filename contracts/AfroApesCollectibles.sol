@@ -1471,7 +1471,7 @@ contract AfroApesCollectibles is ERC1155, Pausable, Ownable {
      * @param _tokenId -  id the token of token
      * @param _price - new price for the of token
      */
-    function setPriceOf(uint _tokenId, uint _price) public onlyOwner tokenExists(_tokenId) {
+    function setPriceOf(uint256 _tokenId, uint256 _price) public onlyOwner tokenExists(_tokenId) {
         _priceOfCollectibles[_tokenId] = _price;
     }
 
